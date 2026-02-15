@@ -1,0 +1,174 @@
+---
+title: "Clean Software Architecture"
+description: "How senior engineers design scalable systems"
+date: "2026-02-15"
+slug: "clean-software-architecture"
+tags: ["architecture", "engineering"]
+cover: "/assets/images/architecture.jpg"
+readingTime: 8
+published: true
+author: "Mobin Karam"
+---
+
+Building software that lasts means designing for change. Clean Architecture gives a way to separate policy from detail so new features, new UIs, or new databases do not ripple through your codebase. Below is a practical guide you can reuse on real projects, from the first folder you create to the tests you write on day two.
+
+## What “clean” really means
+
+- Independent of frameworks: your business rules compile and run without the web framework, ORMs, or cloud SDKs.
+- Testable: domain and use-case code has no I/O, so unit tests run fast and deterministically.
+- UI / DB / infrastructure agnostic: you can swap React for a CLI or Postgres for DynamoDB with minimal refactors.
+- Observable boundaries: dependencies point inward toward stable policy, never outward to volatile detail (the Dependency Rule).
+
+## Core building blocks
+
+**Entities (Domain Model)**  
+Long‑lived business rules and invariants. They should have no knowledge of I/O or frameworks.
+
+**Use Cases / Application Services**  
+Coordinate entities to deliver a user goal: “place order”, “generate report”. They define input/output ports and orchestrate transactions, validation, and policies.
+
+**Interface Adapters (Ports & Adapters)**  
+Translate external representations (HTTP, gRPC, DB rows, messages) to domain types. Implement the ports defined by use cases.
+
+**Infrastructure**  
+Framework glue: controllers, route handlers, ORMs, message brokers, cloud SDKs. They depend on interfaces, not the other way around.
+
+## Minimal folder layout
+
+```
+src/
+  domain/
+    order.ts           // entities + business rules
+  application/
+    use-cases/
+      place-order.ts   // orchestrates entities, defines ports
+    ports/
+      order-repo.ts
+  adapters/
+    db/
+      order-repo.pg.ts // implements port using Postgres
+    http/
+      order-controller.ts
+  infrastructure/
+    server.ts          // framework/bootstrap wiring
+```
+
+Keep boundaries visible in code review: imports should generally point from `infrastructure` → `adapters` → `application` → `domain`, never the reverse.
+
+## Walking through a use case
+
+1) **Define the port** the application needs, not the database shape.
+
+```ts
+// application/ports/order-repo.ts
+export interface OrderRepo {
+  save(order: Order): Promise<void>;
+  findById(id: OrderId): Promise<Order | null>;
+}
+```
+
+2) **Express the use case** purely with domain types.
+
+```ts
+// application/use-cases/place-order.ts
+export class PlaceOrder {
+  constructor(private repo: OrderRepo, private payments: Payments) {}
+
+  async execute(cmd: PlaceOrderCommand): Promise<OrderReceipt> {
+    const order = Order.create(cmd.customerId, cmd.items);
+    await this.payments.charge(order.total());
+    await this.repo.save(order);
+    return { orderId: order.id, total: order.total() };
+  }
+}
+```
+
+3) **Implement adapters** that satisfy those ports.
+
+```ts
+// adapters/db/order-repo.pg.ts
+export class PgOrderRepo implements OrderRepo {
+  constructor(private pool: Pool) {}
+  async save(order: Order) { /* map entity → rows, execute SQL */ }
+  async findById(id: OrderId) { /* rows → entity */ }
+}
+```
+
+4) **Wire at the edge** where frameworks live.
+
+```ts
+// infrastructure/server.ts
+import express from "express";
+const app = express();
+
+const repo = new PgOrderRepo(pgPool);
+const payments = new StripePayments(stripeClient);
+const placeOrder = new PlaceOrder(repo, payments);
+
+app.post("/orders", async (req, res) => {
+  const receipt = await placeOrder.execute(req.body);
+  res.status(201).json(receipt);
+});
+```
+
+The only file aware of Express, Postgres, or Stripe is `server.ts`. Swapping any one dependency changes only the adapter and wiring, not the core use case.
+
+## Guardrails that keep architecture clean
+
+- **Rule of stable dependencies:** depend on things less likely to change. Business rules change slower than frameworks.
+- **No domain imports from adapters/infrastructure:** enforce with ESLint or module boundaries (e.g., `eslint-plugin-boundaries`, `module-resolver` aliases).
+- **Use dependency injection at edges:** constructor injection or factory functions; avoid global singletons.
+- **Immutability for messages:** DTOs entering/leaving use cases should be immutable to prevent accidental mutation.
+- **Make policies explicit:** validation, authorization, idempotency, and retries belong in use cases, not controllers.
+
+## Testing strategy (fast-first)
+
+- **Entity tests:** pure functions or methods; run in milliseconds.
+- **Use case tests:** substitute in-memory fakes for ports. Assert behaviors, not SQL.
+- **Adapter tests:** thin integration tests per adapter (one for Postgres, one for S3, etc.).
+- **Contract tests:** if adapters expose APIs (e.g., HTTP controllers), add consumer-driven contracts to keep schemas stable.
+
+Sample use case test:
+
+```ts
+it("charges and persists an order", async () => {
+  const repo = new InMemoryOrderRepo();
+  const payments = new FakePayments();
+  const placeOrder = new PlaceOrder(repo, payments);
+
+  const receipt = await placeOrder.execute(cmd);
+  expect(receipt.total).toBeGreaterThan(0);
+  expect(repo.savedOrders[0].id).toEqual(receipt.orderId);
+});
+```
+
+## Handling cross-cutting concerns
+
+- **Logging/Tracing:** inject an interface (e.g., `Logger`) into use cases; implement via `pino`, `winston`, or OpenTelemetry exporters in infrastructure.
+- **Transactions:** keep transaction boundaries in adapters; expose transactional decorators or higher-order functions so use cases remain ignorant of the DB.
+- **Caching:** treat caches as adapters implementing repository interfaces; never leak cache types into domain.
+- **Configuration:** pass primitives or small config structs; avoid reading environment variables inside domain or use-case code.
+
+## Evolution patterns
+
+- Start with a modular monolith: the same boundaries apply; physical separation (packages) can come later.
+- Extract services when coupling is low and runtime scaling differs. Ports/adapters make the extraction safer.
+- Introduce events carefully: publish domain events from use cases, handle them in adapters; keep payloads domain-focused, not transport-focused.
+- When frameworks push back (e.g., ORM bi-directional relations), protect your domain with mappers so entities remain clean.
+
+## Lightweight checklist before merging
+
+- Business rule changes require touching only `domain` or `application` folders.
+- Replacing a data store or a message bus means editing only adapters and wiring.
+- Tests for use cases run without network, DB, or filesystem.
+- Imports follow the inward-pointing dependency rule.
+- Controllers have no business logic beyond authentication, parsing, and forwarding to use cases.
+
+## A 30-day adoption plan
+
+**Week 1:** carve out folders for domain, application, adapters, infrastructure. Add lint rules to prevent outward dependencies.  
+**Week 2:** refactor 1–2 core workflows into use cases with explicit ports. Write fast tests with fakes.  
+**Week 3:** move I/O concerns into adapters; add integration tests per adapter.  
+**Week 4:** document boundaries, add contract tests for external APIs, and create a template for new use cases so future features start clean.
+
+Clean Architecture is not about ceremony—it is about preserving changeability. By keeping policy at the center and pushing volatile details to the edge, you set up your system to survive new product ideas, traffic spikes, and infrastructure migrations with confidence.

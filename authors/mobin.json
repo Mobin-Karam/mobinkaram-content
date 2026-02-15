@@ -1,0 +1,13 @@
+{
+  "name": "Mobin Karam",
+  "title": "Mid Software Engineer",
+  "avatar": "/assets/images/mobin.jpg",
+  "bio": "Building reliable web platforms and sharing pragmatic engineering patterns. Enjoys clean architecture, fast frontends, and good coffee.",
+  "location": "United States",
+  "website": "ir",
+  "social": {
+    "github": "https://github.com/Mobin-Karam",
+    "linkedin": "https://www.linkedin.com/in/mobinkaram",
+    "twitter": "https://twitter.com/mobinkaram"
+  }
+}

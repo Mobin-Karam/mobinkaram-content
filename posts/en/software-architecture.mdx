@@ -1,0 +1,83 @@
+---
+title: "Software Architecture Guide"
+description: "Foundations, patterns, and decisions that keep systems adaptable"
+date: "2026-02-15"
+slug: "software-architecture"
+tags: ["architecture", "design", "scalability"]
+cover: "/assets/images/software-architecture.jpg"
+readingTime: 9
+published: true
+author: "Mobin Karam"
+---
+
+Great architecture is more about making change cheap than making diagrams pretty. This guide collects the mental models I use to design systems that survive new features, traffic spikes, and team growth.
+
+## What architecture decides
+
+- **Shape of change:** how easily you can add a feature without touching five teams.  
+- **Runtime qualities:** latency, availability targets, throughput, and cost envelopes.  
+- **Team boundaries:** who owns which modules, services, and SLIs.  
+- **Technical invariants:** data contracts, security posture, and auditability.
+
+## Four pillars to optimize for
+
+1) **Cohesion over size:** small but scattered modules are as painful as monoliths; keep related policies together.  
+2) **Directed coupling:** dependencies must point toward stable policy (domain) and away from volatile detail (frameworks, vendors).  
+3) **Observability first:** tracing, metrics, and structured logs are architectural assets, not ops afterthoughts.  
+4) **Explicit interfaces:** contracts (types, schemas, protobufs) beat tribal knowledge and Slack messages.
+
+## Choosing a structural style
+
+- **Layered / Hexagonal:** best default for product teams; predictable, testable, works in a monolith.  
+- **Modular Monolith:** single deploy with strict module boundaries; great for early-stage speed.  
+- **Service Segmentation:** split when scaling characteristics diverge or release cadence differs. Use a bounded-context map, not org charts, to decide splits.  
+- **Event-Driven:** useful for decoupled workflows and audit trails; still keep owners and schemas per stream.
+
+## Decision workflow (lightweight)
+
+1) Write a 1-page Architecture Decision Record (ADR): context, decision, alternatives, consequences.  
+2) Define critical SLIs/SLOs before picking tech.  
+3) Model domain first (nouns, invariants, aggregates).  
+4) Draw one sequence diagram per core use case; it surfaces data ownership and failure modes.  
+5) Codify boundaries: package/module rules, lint checks, ownership files.
+
+## Data ownership and contracts
+
+- Every dataset needs a **single writer** and a public contract (schema + evolution rules).  
+- Prefer **append-only logs** for auditability; derive projections for reads.  
+- For APIs, publish **versioned schemas** (OpenAPI/Protobuf) and backward-compatibility rules; enforce with contract tests.  
+- Handle **consistency** explicitly: strong for money/state machines, eventual for feeds/counters.
+
+## Reliability patterns to bake in
+
+- **Bulkheads:** isolate noisy neighbors with pools/queues per tenant or per feature.  
+- **Timeouts + retries with jitter:** never call a remote service without both.  
+- **Idempotency keys:** make writes repeatable across retries.  
+- **Circuit breakers:** fail fast when dependencies are unhealthy.  
+- **Dead-letter queues:** capture poison messages with alerts, not silent drops.
+
+## Security by design
+
+- Centralize authz/authn; never duplicate role logic in services.  
+- Use **least privilege** per service identity; rotate secrets automatically.  
+- **Data classification** drives encryption, logging redaction, and retention.  
+- Default-deny inbound traffic; allowlisting beats blocklists.
+
+## Architecture fitness checks (monthly)
+
+- Does each module/service have a clear owner and SLO?  
+- Are import/dependency rules enforced automatically?  
+- Do production incidents map to missing invariants or weak contracts?  
+- Are migrations reversible? Do we practice them in staging with production-like data?  
+- Are dashboards and alerts tied to the business outcomes the system supports?
+
+## Starter checklist for a new system
+
+- Domain model written and reviewed with PMs/ops.  
+- ADR for storage choice (transactions, latency, throughput, retention).  
+- Module boundaries enforced via tooling.  
+- Observability hooks and sampling strategy defined.  
+- Runbooks for the top 3 failure modes (DB down, cache cold, dependency flaky).
+
+Architecture is a continuous conversation. Keep decisions small, documented, and revisitable, and the system will stay flexible long after the first release.
+

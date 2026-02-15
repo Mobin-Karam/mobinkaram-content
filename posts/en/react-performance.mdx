@@ -1,0 +1,90 @@
+---
+title: "React Performance Playbook"
+description: "Measure, budget, and ship fast React experiences without guesswork"
+date: "2026-02-15"
+slug: "react-performance"
+tags: ["react", "performance", "frontend"]
+cover: "/assets/images/react-performance.jpg"
+readingTime: 7
+published: true
+author: "Mobin Karam"
+---
+
+Fast React apps start with measurement, not memoization. This playbook shows a minimal loop you can keep running as the codebase grows.
+
+## 1) Set budgets first
+
+- **TTI / INP budget:** pick a target (e.g., INP < 200 ms on P75 mobile).  
+- **Bundle budget:** set max JS per route (e.g., < 200 kB gzipped).  
+- **Hydration budget:** cap render work by limiting component depth and prop size.
+
+## 2) Measure where users feel it
+
+- Use **Core Web Vitals** in production via `@vercel/analytics`, `web-vitals`, or RUM.  
+- Instrument **interaction spans**: wrap expensive handlers with `performance.mark/measure`.  
+- Record **component render counts** in dev with `why-did-you-render` or React Profiler.
+
+## 3) Trim JavaScript
+
+- **Code-split by route and feature:** dynamic `import()` for infrequent panels and charts.  
+- **Tree-shakeable imports:** prefer ESM named imports; avoid library barrels that pull everything.  
+- **Remove client-only work:** move formatting and derived data to the server or to `useMemo` at the boundary.
+
+## 4) Control rendering
+
+- **Memoize at the seams:** `React.memo` for leaf lists; `useMemo`/`useCallback` where props are stable.  
+- **Key lists correctly:** stable keys prevent unmount/remount thrash.  
+- **Window long lists:** `react-window` or `react-virtualized` for feeds and tables.  
+- **Batched state updates:** in async handlers, wrap multiple state changes in one updater.
+
+### Example: list virtualization
+
+```tsx
+import { FixedSizeList as List } from "react-window";
+
+export function Transactions({ rows }) {
+  return (
+    <List height={480} itemCount={rows.length} itemSize={56} width="100%">
+      {({ index, style }) => (
+        <Row key={rows[index].id} style={style} txn={rows[index]} />
+      )}
+    </List>
+  );
+}
+```
+
+## 5) Hydration and server work
+
+- Prefer **server components** for data fetching and heavy computation when using React 18+ frameworks.  
+- **Stream HTML** (React suspense) so above-the-fold content shows before the whole tree is ready.  
+- Keep **client components small**: avoid passing large objects as props; normalize data at the edge.
+
+## 6) Async and network
+
+- **Cache aggressively:** SWR/React Query with stale-while-revalidate patterns reduces re-render churn.  
+- **Prioritize critical requests:** `fetch` with `signal` to cancel on navigation; use `AbortController`.  
+- **Optimistic UI** with rollback keeps interactions snappy while maintaining correctness.
+
+## 7) Images and assets
+
+- Serve **responsive sources** (`<picture>` or `srcset`); never ship desktop assets to mobile.  
+- Lazy-load below-the-fold images with `loading="lazy"` and intersection observers.  
+- Use **modern formats** (AVIF/WebP) and CDNs with smart caching.
+
+## 8) Profiling loop
+
+1) Reproduce slow path with Profiler.  
+2) Capture flame graph; tag the specific component and interaction.  
+3) Apply one change; remeasure the same interaction.  
+4) Guard with a test or lint rule (e.g., bundle size limit per page).
+
+## Quick checklist before merging
+
+- Route bundle under budget; chunks named and cacheable.  
+- No unnecessary renders on keystroke interactions.  
+- Lists over 200 items are windowed or paginated.  
+- Long tasks (>50 ms) reduced or split with `requestIdleCallback`.  
+- Core Web Vitals monitors enabled in production.
+
+Ship speed intentionally: measure, budget, and keep rendering predictable so the UI stays fast as features pile up.
+
