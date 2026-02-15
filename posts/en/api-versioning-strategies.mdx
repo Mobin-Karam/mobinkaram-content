@@ -1,0 +1,63 @@
+---
+title: "API Versioning Strategies"
+description: "How to evolve APIs without breaking clients"
+date: "2026-02-15"
+slug: "api-versioning-strategies"
+tags: ["api", "versioning", "backend"]
+cover: "/assets/images/api-versioning.jpg"
+readingTime: 7
+published: true
+author: "Mobin Karam"
+---
+
+APIs that live more than a quarter inevitably change. Good versioning lets you ship new capabilities while keeping existing consumers stable. Here’s a field guide that balances simplicity, safety, and speed.
+
+## Principles
+
+- **Compatibility first:** avoid breaking changes; add, don’t mutate or remove.  
+- **Predictable evolution:** publish rules for deprecation, removal, and support timelines.  
+- **Discoverability:** make the served version explicit (headers or URLs), not implicit.
+
+## Versioning styles
+
+1) **URI versioning** (`/v1/`): clear, cache-friendly, and easy to route; best default for HTTP APIs.  
+2) **Header versioning** (`Accept: application/vnd.acme+json; version=2`): keeps URLs stable; good for public APIs needing fine-grained media types.  
+3) **Field-level versioning**: add new fields with defaults; rarely need a new major version if you can stay backward compatible.
+
+## When to cut a major version
+
+- Removing or renaming fields/paths.  
+- Changing required parameters or semantics.  
+- Switching representations (e.g., pagination model, auth scheme).
+
+If you must break, run v1 and v2 side-by-side for a migration window, with analytics and alerting on v1 usage.
+
+## Backward-compatible playbook
+
+- Only **add** fields; never change meaning of existing ones.  
+- Mark deprecated fields in schema docs and emit `Deprecation` headers.  
+- Use **defaultable** params instead of new required ones.  
+- Add **feature flags** to expose new behaviors before freezing the contract.
+
+## Governance that scales
+
+- Keep an ADR for each breaking change decision.  
+- Require **contract tests** from consumers before removing old versions.  
+- Track version usage per client; set removal dates in release notes and status page.  
+- Automate linting for OpenAPI/Protobuf compatibility (e.g., `vacuum`, `buf` breaking checks).
+
+## Migration kit for clients
+
+- Provide a changelog and “diff” examples between versions.  
+- Supply SDKs or typed clients that smooth breaking edges.  
+- Offer **sandbox environments** and replay tools so clients can validate quickly.
+
+## Checklist before releasing vNext
+
+- Version routing exercised in staging with real traffic replay.  
+- Monitoring per version (rate, errors, latency).  
+- Deprecation headers live for at least one full client release cycle.  
+- Rollback plan: keep old version hot and data-compatible.
+
+Thoughtful versioning keeps teams moving without leaving consumers behind. Treat contracts as products: documented, measured, and supported.
+

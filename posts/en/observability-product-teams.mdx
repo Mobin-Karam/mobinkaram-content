@@ -1,0 +1,64 @@
+---
+title: "Observability for Product Teams"
+description: "Practical logging, metrics, and tracing that catch issues before users do"
+date: "2026-02-15"
+slug: "observability-product-teams"
+tags: ["observability", "monitoring", "devops"]
+cover: "/assets/images/observability.jpg"
+readingTime: 8
+published: true
+author: "Mobin Karam"
+---
+
+Observability is how you learn what your system is doing in production without shipping custom builds. Product teams need a lean setup that surfaces user-facing issues fast and links them to code changes.
+
+## Goals to optimize
+
+- **Time to detect (TTD):** minutes, not hours.  
+- **Time to understand (TTU):** one dashboard to form a hypothesis.  
+- **Time to mitigate (TTM):** feature flags or rollbacks ready.
+
+## The three signals
+
+- **Logs:** structured, short, and queryable; every request gets a trace/span id.  
+- **Metrics:** cheap aggregates for alerting (SLIs/SLOs). Prioritize latency, error rate, saturation.  
+- **Traces:** connect user actions to downstream calls; invaluable for “works on my machine” bugs.
+
+## Minimal instrumentation plan
+
+- Generate a **trace id at the edge** (gateway/load balancer) and propagate via headers.  
+- Add **structured logs** with context (`userId`, `tenantId`, `featureFlag`, `version`).  
+- Emit **RED/USE metrics** for each service: rate, errors, duration; utilization, saturation, errors.  
+- Sample traces smartly: 100% for errors, lower rate for healthy traffic, dynamic sampling during incidents.
+
+## Alerting that respects sleep
+
+- Alert on **symptoms**, not internals: 5xx rate, elevated latency, failed checkouts.  
+- Tie alerts to **runbooks** and owners; page only when user impact is real.  
+- Use **multi-window, multi-burn-rate** SLO alerts to balance noise vs. risk.
+
+## Dashboards that answer first questions
+
+1) Is it happening everywhere or one tenant/region?  
+2) Which deploy or flag changed recently?  
+3) Which dependency is slow or erroring?  
+4) What logs/traces show the failing path?
+
+Keep one “golden dashboard” per service with these views; avoid dashboard sprawl.
+
+## Tooling tips
+
+- Prefer **open standards** (OpenTelemetry) to avoid vendor lock-in.  
+- Standardize log fields and metric names across services.  
+- Ship **local playgrounds** (docker-compose) so devs can test instrumentation before merge.  
+- Budget storage: retain high-cardinality data (traces/logs) shorter than metrics.
+
+## Checklist before go-live
+
+- Trace context generated at ingress and visible in every log line.  
+- Error budgets and SLOs agreed with product/ops.  
+- Synthetic checks cover top user journeys.  
+- Dashboards linked in runbooks; on-call knows where to look.
+
+Observability is a product feature: it reduces downtime, improves velocity, and keeps users happy. Build it with the same care as your customer-facing code.
+
