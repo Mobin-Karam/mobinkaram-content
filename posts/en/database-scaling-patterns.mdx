@@ -1,0 +1,55 @@
+---
+title: "Database Scaling Patterns"
+description: "When to choose vertical scaling, read replicas, caching, or sharding"
+date: "2026-02-15"
+slug: "database-scaling-patterns"
+tags: ["database", "scaling", "architecture"]
+cover: "/assets/images/database-scaling.jpg"
+readingTime: 9
+published: true
+author: "Mobin Karam"
+---
+
+Most systems outgrow a single database before they outgrow their users. This guide maps common scaling moves to the symptoms they solve, with trade-offs you should surface in design docs.
+
+## Read vs. write pressure
+
+- **High reads, stable writes:** add a **cache** (CDN, Redis) and **read replicas**.  
+- **High writes:** prefer **partitioning** (by tenant, region, or key range) and careful **primary key** design to avoid hot spots.
+
+## Scaling patterns
+
+- **Vertical scaling:** cheapest short-term lever; watch IOPS and memory saturation.  
+- **Read replicas:** offload reads; eventual consistency is acceptable for most reads, not for counters or balances.  
+- **Caching:** edge or application cache reduces DB hits; define TTL and invalidation rules up front.  
+- **Sharding:** splits data across primaries; requires a shard key, routing layer, and rebalancing plan.  
+- **Archive/Cold storage:** move historical rows to cheaper storage to keep hot set small.
+
+## Choosing a shard key
+
+- **Cardinality & distribution:** avoid hot shards; hash when unsure.  
+- **Locality:** collocate data needed together (tenantId, region).  
+- **Immutability:** shard key shouldn’t change; otherwise you need cross-shard moves.
+
+## Operational guardrails
+
+- Keep **global transactions** rare; design per-shard workflows.  
+- Add **automated rebalancing** and **capacity alarms** per shard.  
+- Enforce **idempotent writes** and **replay-safe migrations**.  
+- Maintain **backfill tooling** that can throttle and resume.
+
+## Schema evolution at scale
+
+- Prefer **expand/contract** migrations: add new columns, backfill, switch reads, then drop old columns.  
+- Run migrations **per shard** with rate limiting; monitor replication lag.  
+- Keep **online index builds** and avoid table locks during peak.
+
+## Checklist for design review
+
+- Workload stats: read/write mix, P99 latency, row size, growth per month.  
+- Chosen scaling pattern and why others were rejected.  
+- Failure modes: replica lag, cache stampede, split-brain, rebalancing impact.  
+- Runbook coverage: how to add a shard, rebuild a replica, and invalidate cache safely.
+
+Scaling is a series of deliberate, reversible steps. Start simple, measure, and introduce complexity only when the metrics demand it.
+

@@ -1,0 +1,68 @@
+---
+title: "Effective Code Reviews"
+description: "Fast, kind, and high-signal reviews that keep quality up and lead time down"
+date: "2026-02-15"
+slug: "effective-code-reviews"
+tags: ["process", "code-review", "team"]
+cover: "/assets/images/code-review.jpg"
+readingTime: 6
+published: true
+author: "Mobin Karam"
+---
+
+Great reviews catch risks early without slowing the team. Here’s a concise playbook you can drop into your workflow tomorrow.
+
+## What reviewers optimize
+
+- **Correctness and risk:** bugs, data corruption, security gaps.  
+- **Alignment:** architecture boundaries, conventions, and product acceptance criteria.  
+- **Maintainability:** clarity, tests, and observability hooks.
+
+## Reviewer checklist
+
+- Scope small PRs (<400 lines touched) or ask for a split.  
+- Read the **intent first** (issue, design doc, PR description).  
+- Check **interfaces and contracts** before implementation details.  
+- Look for **testing deltas:** missing edge cases, flaky patterns, no regression test for the bug fixed.  
+- Verify **observability:** logs/metrics/traces for new flows or failure paths.
+
+## Author habits that speed things up
+
+- Write a crisp PR description: problem, approach, trade-offs, testing.  
+- Add **screenshots or clips** for UI changes; link to **metrics** for perf changes.  
+- Flag areas where you want extra scrutiny.  
+- Keep commits reviewable: logical chunks with passing tests.
+
+## Making decisions
+
+- Prefer **blocking comments only for correctness or safety**; use non-blocking for style.  
+- When you disagree, suggest an **alternative** or ask for data.  
+- Capture outcomes in the PR summary or an ADR if architectural.
+
+## Metrics to watch
+
+- Time to first response.  
+- Review depth: number of substantive comments vs. nits.  
+- Defects found post-merge.  
+- PR size distribution.
+
+## Anti-patterns
+
+- Drive-by LGTM without reading.  
+- Perfectionism that ignores business context.  
+- Piling on nits without auto-formatters/linters in place.  
+- Unclear ownership: who can approve? who is responsible for risk?
+
+## Lightweight template (reuse in your repo)
+
+```
+## Context
+## Changes
+## Risks
+## Tests
+## Screenshots/metrics
+## Notes for reviewers
+```
+
+Code reviews are a skill. Practice deliberate habits, measure the loop, and you’ll ship faster with fewer surprises.
+
