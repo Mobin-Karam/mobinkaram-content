@@ -1,0 +1,60 @@
+---
+title: "مسیر‌دهی در Next.js"
+description: "راهنمای عملی برای App Router، صفحات ایستا و مسیرهای پویا"
+date: "2026-02-15"
+slug: "nextjs-routing"
+tags: ["nextjs", "routing", "web-development"]
+category: "web-development"
+cover: "/assets/images/nextjs-routing.jpg"
+readingTime: 7
+published: true
+author: "Mobin Karam"
+---
+
+نسخه‌های جدید Next.js با App Router مسیر‌دهی را ساده و قدرتمند کرده‌اند. این راهنما تفاوت‌ها و الگوهای رایج را خلاصه می‌کند.
+
+## ساختار پوشه
+
+- پوشه `app/` مبناست؛ هر پوشه با `page.tsx` یک روت می‌سازد.  
+- فایل `layout.tsx` برای layout مشترک در سطح همان پوشه و زیرمسیرهاست.
+
+## مسیرهای پویا و اختیاری
+
+- `[id]/page.tsx` برای مسیر پویا؛ پارامتر از `params` می‌آید.  
+- `[[...slug]]/page.tsx` برای catch-all اختیاری (مثلاً صفحه مستندات).
+
+## داده و رندر
+
+- **Server Components** پیش‌فرض؛ داده را مستقیم با `fetch` می‌گیرند.  
+- برای تعامل یا state محلی، فایل را با `"use client"` آغاز کنید.  
+- از `generateStaticParams` برای pre-render مسیرهای پویا استفاده کنید و ISR را با `revalidate` فعال کنید.
+
+## متادیتا و سئو
+
+- تابع `generateMetadata` عنوان و توضیح هر صفحه را بر اساس داده تنظیم می‌کند.  
+- از `robots` و `sitemap` در `app/` برای کنترل کراول استفاده کنید.
+
+## ناوبری و لینک
+
+- `Link` از 
+ext/link` برای ناوبری client-side؛ برای preload خودکار، لینک را در viewport قرار دهید.  
+- برای ریدایرکت سمت سرور از `redirect` در Server Action یا loader استفاده کنید.
+
+## چک‌لیست
+
+- مسیرهای پویا و ISR تست شده‌اند.  
+- خطا و لودینگ برای هر بخش (`error.tsx`, `loading.tsx`) پوشش داده شده.  
+- داده‌های حساس در Server Components نگه داشته شده و به کلاینت نشت نکرده.
+
+با درک این الگوها، ساخت روت‌های تمیز و سریع در Next.js ساده می‌شود.
+
+
+
+
+
+
+
+
+
+
+

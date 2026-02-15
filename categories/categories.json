@@ -1,0 +1,50 @@
+[
+  {
+    "slug": "architecture",
+    "title": {
+      "fa": "معماری نرم‌افزار",
+      "en": "Software Architecture"
+    },
+    "description": {
+      "fa": "طراحی سیستم‌های مقیاس‌پذیر و اصول معماری",
+      "en": "Scalable systems and architecture design principles"
+    },
+    "icon": "layers"
+  },
+  {
+    "slug": "web-development",
+    "title": {
+      "fa": "توسعه وب",
+      "en": "Web Development"
+    },
+    "description": {
+      "fa": "فرانت‌اند، بک‌اند و فریمورک‌های مدرن",
+      "en": "Frontend, backend and modern frameworks"
+    },
+    "icon": "globe"
+  },
+  {
+    "slug": "devops",
+    "title": {
+      "fa": "دواپس",
+      "en": "DevOps"
+    },
+    "description": {
+      "fa": "استقرار و زیرساخت نرم‌افزار",
+      "en": "Deployment and infrastructure engineering"
+    },
+    "icon": "server"
+  },
+  {
+    "slug": "islam",
+    "title": {
+      "fa": "اسلام",
+      "en": "Islam"
+    },
+    "description": {
+      "fa": "معارف، اخلاق و سبک زندگی اسلامی",
+      "en": "Islamic teachings, ethics, and lifestyle guidance"
+    },
+    "icon": "moon"
+  }
+]
