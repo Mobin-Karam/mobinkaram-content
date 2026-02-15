@@ -10,7 +10,14 @@
       "en": "Scalable systems and architecture design principles"
     },
     "icon": "layers",
-    "iconPath": "/assets/icons/layers.svg"
+    "iconPath": "/assets/icons/layers.svg",
+    "theme": {
+      "primary": "#155e75",
+      "secondary": "#38bdf8",
+      "background": "#0b1727",
+      "text": "#eef2ff",
+      "bgPattern": "/assets/backgrounds/architecture.svg"
+    }
   },
   {
     "slug": "web-development",
@@ -23,7 +30,14 @@
       "en": "Frontend, backend and modern frameworks"
     },
     "icon": "globe",
-    "iconPath": "/assets/icons/globe.svg"
+    "iconPath": "/assets/icons/globe.svg",
+    "theme": {
+      "primary": "#7c3aed",
+      "secondary": "#22d3ee",
+      "background": "#0f172a",
+      "text": "#e2e8f0",
+      "bgPattern": "/assets/backgrounds/web-development.svg"
+    }
   },
   {
     "slug": "devops",
@@ -36,7 +50,14 @@
       "en": "Deployment and infrastructure engineering"
     },
     "icon": "server",
-    "iconPath": "/assets/icons/server.svg"
+    "iconPath": "/assets/icons/server.svg",
+    "theme": {
+      "primary": "#15803d",
+      "secondary": "#fbbf24",
+      "background": "#0b1724",
+      "text": "#ecfdf3",
+      "bgPattern": "/assets/backgrounds/devops.svg"
+    }
   },
   {
     "slug": "islam",
@@ -49,6 +70,13 @@
       "en": "Islamic teachings, ethics, and lifestyle guidance"
     },
     "icon": "moon",
-    "iconPath": "/assets/icons/moon.svg"
+    "iconPath": "/assets/icons/moon.svg",
+    "theme": {
+      "primary": "#166534",
+      "secondary": "#fbbf24",
+      "background": "#0c1a14",
+      "text": "#f7fee7",
+      "bgPattern": "/assets/backgrounds/islam.svg"
+    }
   }
 ]

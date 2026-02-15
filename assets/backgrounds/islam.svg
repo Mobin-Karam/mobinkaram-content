@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="islam-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c1a14"/>
+      <stop offset="100%" stop-color="#0f2e24"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="400" fill="url(#islam-grad)"/>
+  <path d="M0 260 Q160 210 320 250 T640 230 T800 250 L800 400 L0 400 Z" fill="#0f3b2d" opacity="0.65"/>
+  <path d="M0 225 Q190 185 380 215 T760 195 T800 210 L800 400 L0 400 Z" fill="#166534" opacity="0.45"/>
+  <path d="M0 195 Q210 160 420 190 T800 175 L800 400 L0 400 Z" fill="#fbbf24" opacity="0.18"/>
+  <path d="M600 90 A40 40 0 1 0 660 150 A28 28 0 1 1 600 90" fill="#fbbf24" opacity="0.9"/>
+  <circle cx="160" cy="110" r="10" fill="#fbbf24" opacity="0.7"/>
+</svg>
