@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "defaultLocale": "en",
+  "locales": ["en", "fa"],
+  "postsRoot": "posts",
+  "assetsRoot": "assets",
+  "categoriesFile": "categories/categories.json",
+  "defaultAuthorFile": "authors/mobin.json",
+  "dateStorage": "gregorian-iso",
+  "persianPublicCalendar": "persian",
+  "contentRevalidateSeconds": 300
+}
