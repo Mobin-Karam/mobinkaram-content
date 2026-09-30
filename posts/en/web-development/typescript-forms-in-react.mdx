@@ -1,0 +1,37 @@
+---
+title: "Building Safer React Forms with TypeScript"
+description: "Use typed form values, focused validation, and accessible feedback to make form code dependable."
+date: "2026-09-30"
+slug: "building-safer-react-forms-typescript"
+translationKey: "typescript-forms-in-react"
+tags: ["react", "typescript", "frontend"]
+category: "web-development"
+cover: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1600&q=85"
+readingTime: 6
+published: true
+author: "Mobin Karam"
+---
+
+Forms are small workflows. A reliable form names its data, validates at the right boundary, and makes recovery from mistakes clear.
+
+## Define the submitted shape
+
+```ts
+type ProfileInput = {
+  displayName: string;
+  email: string;
+  newsletter: boolean;
+};
+```
+
+Use this type for initial values, submit handlers, and API payloads. A field rename then becomes a guided refactor instead of a production surprise.
+
+## Validate in layers
+
+Client validation should improve feedback and reduce avoidable requests. The server must repeat the validation because it is the authority that accepts data. Keep validation messages close to their fields and never rely on a disabled button as the only protection.
+
+## Preserve accessibility
+
+Every input needs a label. Errors should be programmatically associated with the input, and the first invalid field should be easy to reach by keyboard. If submission is pending, explain the state rather than silently freezing the form.
+
+Typed values make the code safer; clear feedback makes the experience kinder. Both are necessary for a form people can trust.

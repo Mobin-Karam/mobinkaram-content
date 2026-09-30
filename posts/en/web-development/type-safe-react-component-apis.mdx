@@ -1,0 +1,46 @@
+---
+title: "Designing Type-Safe React Component APIs"
+description: "Learn how thoughtful TypeScript props make React components easier to reuse, review, and evolve."
+date: "2026-09-30"
+slug: "designing-type-safe-react-component-apis"
+translationKey: "type-safe-react-component-apis"
+tags: ["react", "typescript", "frontend"]
+category: "web-development"
+cover: "https://images.unsplash.com/photo-1516116216624-53e697fedbea?auto=format&fit=crop&w=1600&q=85"
+readingTime: 6
+published: true
+author: "Mobin Karam"
+---
+
+A component API is a promise to the people who will use it. In React, TypeScript lets that promise live next to the component instead of only in a design document.
+
+## Start with the smallest useful props
+
+Describe the values a component truly needs. Prefer a narrow union over a broad string when the valid choices are known.
+
+```tsx
+type ButtonProps = {
+  tone?: "primary" | "quiet" | "danger";
+  loading?: boolean;
+  children: React.ReactNode;
+};
+```
+
+This gives editors useful autocomplete and prevents accidental unsupported variants.
+
+## Model related states together
+
+Avoid combinations such as `loading`, `error`, and `success` booleans when only one can be active. A discriminated union makes impossible UI states unrepresentable.
+
+```tsx
+type SaveState =
+  | { status: "idle" }
+  | { status: "saving" }
+  | { status: "failed"; message: string };
+```
+
+## Keep native behavior available
+
+When wrapping a native button or input, extend its native props and forward the ref. Users retain keyboard behavior, accessibility attributes, and familiar event types.
+
+A good component type is not decoration. It documents intent, catches misuse early, and gives refactors a safer path. Start small, name states clearly, and let the public API reflect the user experience.

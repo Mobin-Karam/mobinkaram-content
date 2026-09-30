@@ -1,0 +1,33 @@
+---
+title: "نگاه ماشین حالت به رابط کاربری React"
+description: "با جایگزین کردن booleanهای پراکنده با گذارهای حالت صریح، صفحه‌های تعاملی React را قابل فهم‌تر کنید."
+date: "2026-09-30"
+slug: "negah-state-machine-react"
+translationKey: "react-state-machine-thinking"
+tags: ["react", "typescript", "frontend"]
+category: "web-development"
+cover: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1600&q=85"
+readingTime: 6
+published: true
+author: "Mobin Karam"
+---
+
+بخش زیادی از باگ‌های UI از حالت‌هایی می‌آیند که نباید هم‌زمان رخ دهند. یک dialog نمی‌تواند هم بسته و هم در حال ارسال باشد.
+
+## حالت‌ها را نام‌گذاری کنید
+
+ابتدا حالت‌های واقعی تجربه را بنویسید: ویرایش، ارسال، موفقیت و خطا. سپس داده لازم برای هر حالت را در همان type قرار دهید.
+
+```ts
+type Checkout =
+  | { mode: "editing" }
+  | { mode: "submitting" }
+  | { mode: "success"; receiptId: string }
+  | { mode: "failure"; reason: string };
+```
+
+## گذارها را آگاهانه کنید
+
+رویدادهایی مثل `SUBMIT` و `RETRY` باید فقط بین حالت‌های معتبر حرکت کنند. حتی بدون کتابخانه state machine، این مدل review کد را دقیق‌تر می‌کند.
+
+اگر mode برابر submitting است، `isBusy` را از آن مشتق کنید و boolean جداگانه نگه ندارید. منبع حقیقت کمتر یعنی باگ همگام‌سازی کمتر.

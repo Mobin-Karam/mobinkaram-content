@@ -1,0 +1,44 @@
+---
+title: "Reliable Data Fetching in React with TypeScript"
+description: "A practical pattern for typing asynchronous data, errors, and UI states without hiding uncertainty."
+date: "2026-09-30"
+slug: "reliable-data-fetching-react-typescript"
+translationKey: "react-typescript-data-fetching"
+tags: ["react", "typescript", "frontend"]
+category: "web-development"
+cover: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=1600&q=85"
+readingTime: 6
+published: true
+author: "Mobin Karam"
+---
+
+Data fetching is where a UI meets uncertainty: a request can be pending, fail, return nothing, or return useful data. Make those states explicit.
+
+## Type the boundary
+
+Give the response a shape at the point it enters your application. Do not spread `any` through components.
+
+```ts
+type Article = { id: string; title: string; publishedAt: string };
+```
+
+Runtime validation is still important for untrusted APIs; TypeScript verifies code assumptions, not remote JSON.
+
+## Render state before content
+
+A simple state model keeps the screen honest:
+
+```ts
+type QueryState<T> =
+  | { status: "loading" }
+  | { status: "error"; message: string }
+  | { status: "success"; data: T };
+```
+
+Each branch now has the data it needs. The success view cannot accidentally read an undefined response.
+
+## Keep errors useful
+
+Show a human-friendly error in the UI, retain enough context for logs, and provide a retry only when it is safe. Empty results deserve their own intentional screen instead of looking like a broken request.
+
+The goal is not to make asynchronous work look synchronous. The goal is to make every realistic outcome understandable to both the developer and the user.

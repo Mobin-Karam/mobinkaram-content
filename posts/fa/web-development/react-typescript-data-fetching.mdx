@@ -1,0 +1,36 @@
+---
+title: "دریافت داده قابل اعتماد در React با TypeScript"
+description: "الگویی عملی برای type کردن داده‌های async، خطاها و وضعیت‌های رابط کاربری بدون پنهان کردن عدم قطعیت."
+date: "2026-09-30"
+slug: "daryaft-dade-react-typescript"
+translationKey: "react-typescript-data-fetching"
+tags: ["react", "typescript", "frontend"]
+category: "web-development"
+cover: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=1600&q=85"
+readingTime: 6
+published: true
+author: "Mobin Karam"
+---
+
+دریافت داده همان جایی است که رابط کاربری با عدم قطعیت روبه‌رو می‌شود: درخواست می‌تواند در حال اجرا باشد، شکست بخورد، داده خالی برگرداند یا نتیجه مفید داشته باشد. این حالت‌ها را صریح کنید.
+
+## مرز داده را type کنید
+
+در لحظه ورود پاسخ به برنامه، شکل آن را تعریف کنید و `any` را در کامپوننت‌ها پخش نکنید.
+
+```ts
+type Article = { id: string; title: string; publishedAt: string };
+```
+
+برای API غیرقابل اعتماد همچنان به اعتبارسنجی runtime نیاز دارید؛ TypeScript فقط فرض‌های کد را بررسی می‌کند.
+
+## پیش از محتوا، وضعیت را render کنید
+
+```ts
+type QueryState<T> =
+  | { status: "loading" }
+  | { status: "error"; message: string }
+  | { status: "success"; data: T };
+```
+
+حالا هر شاخه داده مورد نیازش را دارد و view موفق نمی‌تواند ناخواسته پاسخ undefined بخواند. نتیجه خالی هم باید یک صفحه آگاهانه داشته باشد، نه ظاهری شبیه خطا.

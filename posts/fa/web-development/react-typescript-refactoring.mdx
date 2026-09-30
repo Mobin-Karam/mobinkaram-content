@@ -1,0 +1,31 @@
+---
+title: "گردش‌کار عملی refactor در React و TypeScript"
+description: "با typeها، تست‌ها و تغییرات تدریجی، کد React را بدون شکستن قرارداد کاربران بهبود دهید."
+date: "2026-09-30"
+slug: "refactor-react-typescript"
+translationKey: "react-typescript-refactoring"
+tags: ["react", "typescript", "frontend"]
+category: "web-development"
+cover: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1600&q=85"
+readingTime: 6
+published: true
+author: "Mobin Karam"
+---
+
+Refactor یعنی ساختار را تغییر دهیم و رفتار مورد اتکای کاربران را حفظ کنیم. TypeScript در این مسیر مفید است، چون محل‌های استفاده فراموش‌شده را به خطای قابل مشاهده تبدیل می‌کند.
+
+## از قرارداد فعلی محافظت کنید
+
+پیش از جابه‌جایی کد، props کامپوننت، hookهای export شده، رفتار route و payloadهای API را بشناسید. قرارداد عمومی فقط باید آگاهانه تغییر کند.
+
+## هر بار یک مرز را تغییر دهید
+
+یک helper خالص استخراج کنید، type متمرکز بدهید، callerها را به‌روزرسانی کنید و بررسی‌ها را اجرا کنید. تغییرات کوچک‌تر هم review ساده‌تری دارند و هم بازگرداندنشان امن‌تر است.
+
+```ts
+function formatPrice(cents: number, currency: string): string {
+  return new Intl.NumberFormat("en", { style: "currency", currency }).format(cents / 100);
+}
+```
+
+وقتی type error ایجاد شد آن را با cast پنهان نکنید. اغلب نشانه loading state گم‌شده، مقدار اختیاری یا مرز مالکیت نامشخص است. refactor امن هدفی محدود و اعتبارسنجی قابل مشاهده دارد.

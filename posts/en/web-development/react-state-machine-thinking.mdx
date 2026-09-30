@@ -1,0 +1,37 @@
+---
+title: "State-Machine Thinking for React UI"
+description: "Replace scattered booleans with explicit state transitions to make interactive React screens easier to reason about."
+date: "2026-09-30"
+slug: "state-machine-thinking-react-ui"
+translationKey: "react-state-machine-thinking"
+tags: ["react", "typescript", "frontend"]
+category: "web-development"
+cover: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1600&q=85"
+readingTime: 6
+published: true
+author: "Mobin Karam"
+---
+
+Complex UI bugs often come from states that should never coexist. A dialog cannot be both closed and submitting; a checkout cannot be both complete and waiting for payment.
+
+## Name the modes
+
+Start by listing the real modes of the experience: idle, editing, submitting, success, and failure. Then encode the extra data each mode requires.
+
+```ts
+type Checkout =
+  | { mode: "editing" }
+  | { mode: "submitting" }
+  | { mode: "success"; receiptId: string }
+  | { mode: "failure"; reason: string };
+```
+
+## Make transitions intentional
+
+Events such as `SUBMIT`, `RESOLVE`, and `RETRY` should move one valid mode to another. This is useful even without a dedicated state-machine library: the model makes review conversations concrete.
+
+## Derive instead of duplicating
+
+If the mode is submitting, derive `isBusy` from it instead of storing another boolean. Fewer sources of truth mean fewer synchronization bugs.
+
+State-machine thinking does not make every component large. It helps you recognize when a simple boolean has become a hidden workflow and needs a clearer model.
