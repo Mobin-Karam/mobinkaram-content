@@ -1,0 +1,242 @@
+---
+title: "Building Moshaver: From a Simple Idea to an Educational Platform"
+description: "How Moshaver grew from a simple idea into a platform for managing students, study plans, reports, exams, messaging, and more."
+date: "2026-10-01"
+slug: "building-moshaver"
+translationKey: "building-moshaver"
+tags: ["moshaver", "react", "typescript", "software-engineering", "edtech"]
+category: "projects"
+readingTime: 6
+published: true
+author: "Mobin Karam"
+---
+
+# Building Moshaver
+
+![Repo Github](https://github.com/mobinkaram/moshaver)
+
+
+Moshaver started from a simple problem.
+
+Students and educational consultants usually communicate through many different places.
+
+A study plan may be written in a notebook, daily reports may be sent through a messaging app, exam results may be stored somewhere else, and important information can easily get lost between all of them.
+
+I wanted to see if I could bring these things together into one system.
+
+That became **Moshaver**.
+
+## What is Moshaver?
+
+Moshaver is a platform I am building for students, educational consultants, and administrators.
+
+The idea is to give them one place for managing things like:
+
+- students
+- study plans
+- daily reports
+- exams
+- messages
+- notifications
+- schedules
+- progress
+
+Instead of constantly moving between different apps and spreadsheets, the important parts of the student's work can stay together.
+
+The project has grown quite a lot since I first started it.
+
+And as it grew, I learned that building a real application is very different from building a few separate pages.
+
+## Planning Students' Days
+
+One of the main parts of Moshaver is the planner.
+
+A consultant can create a plan for a student and add tasks for different days.
+
+A task can have its own time, duration, type, description, and even be connected to an exam.
+
+At first, displaying these tasks as a normal list seemed enough.
+
+But after working with it more, I realized that a study plan is easier to understand visually.
+
+So I started building a timeline where tasks can be shown based on their actual time during the day.
+
+This introduced a lot of small problems.
+
+What happens when two tasks overlap?
+
+What happens when a task is moved to another day?
+
+Should the duration stay the same?
+
+Can every user edit it?
+
+How should the change be saved?
+
+A simple drag-and-drop interaction on the screen can require quite a lot of logic behind it.
+
+## Daily Reports
+
+Plans tell us what a student is supposed to do.
+
+Reports tell us what actually happened.
+
+Students can submit reports about their day and consultants can review those reports later.
+
+This becomes especially important when one consultant manages many students.
+
+Without a system, the consultant may need to search through many conversations just to understand what a student did during the previous week.
+
+Inside Moshaver, reports can be organized and filtered by student and date.
+
+They can also be searched and sorted.
+
+It is not the most complicated feature technically, but it can be one of the most useful features in everyday use.
+
+## Exams
+
+Exams are another important part of the system.
+
+The platform can keep exam information together with the rest of the student's work.
+
+Instead of treating an exam as something completely separate, it can be connected to planning and other student information.
+
+This also makes it possible to build better tools around exams later.
+
+For example, the system could help show what happened before an exam, what the student studied, and how their preparation changed over time.
+
+## Communication
+
+Moshaver also includes communication between students and consultants.
+
+I wanted messaging to feel like part of the platform instead of something added beside it.
+
+This introduced another interesting part of the project: navigation and state.
+
+When users move between conversations, student profiles, reports, plans, and other parts of the system, the interface needs to remain understandable.
+
+That is why I have spent time restructuring the chat and navigation system as the application has grown.
+
+## Building for Persian Users
+
+Moshaver is mainly designed for Persian-speaking users.
+
+Because of that, Persian support is not just an extra feature.
+
+It is part of the design.
+
+The interface supports RTL layouts and Persian text, and the platform also works with the Jalali calendar.
+
+Dates became a surprisingly interesting technical problem.
+
+A user might see:
+
+`1405/07/09`
+
+while the API may work with:
+
+`2026-10-01`
+
+The frontend needs to correctly convert and display these dates without mixing the two systems or producing invalid values.
+
+It sounds like a small detail until dates appear across reports, exams, plans, filters, and dashboards.
+
+Then it becomes an important part of the architecture.
+
+## Growing the Frontend
+
+The frontend is built mainly with **React and TypeScript**.
+
+As the project became larger, I started moving away from building each page independently.
+
+Instead, I began thinking more about reusable components and features.
+
+Things like:
+
+- buttons
+- cards
+- inputs
+- badges
+- modals
+- loading states
+- student selectors
+- navigation
+- date components
+
+should behave consistently throughout the application.
+
+This has made me think more about design systems and frontend architecture instead of only thinking about individual pages.
+
+I have also worked on responsive layouts, dark and light themes, loading skeletons, and PWA support.
+
+## The Hard Part Is Not Always Writing Code
+
+One of the biggest things I learned from Moshaver is that writing code is often not the hardest part.
+
+Making decisions is harder.
+
+Where should this logic live?
+
+Should it be a React component or a hook?
+
+Should this component be shared?
+
+How should API requests be organized?
+
+How do I add a new feature without making the existing code harder to maintain?
+
+How do I improve the frontend without unnecessarily changing the backend?
+
+These questions become more important every time the project grows.
+
+Moshaver has therefore become more than a project for practicing React.
+
+It has become a place where I learn about software architecture.
+
+## Moshaver Could Become More Than an Educational Platform
+
+While building the project, I noticed something interesting.
+
+Many of Moshaver's core concepts are not specific to education.
+
+It already works with concepts such as:
+
+- users
+- roles
+- permissions
+- tasks
+- schedules
+- reports
+- notifications
+- messaging
+- dashboards
+
+These same building blocks appear in many types of software.
+
+A hotel needs users, schedules, tasks, reports, and notifications.
+
+A restaurant can need them too.
+
+So can companies, service businesses, schools, and many other organizations.
+
+Because of this, I have started thinking about Moshaver as more than one fixed application.
+
+Some parts of it could eventually become reusable modules for other kinds of systems.
+
+## What Moshaver Has Taught Me
+
+Moshaver is still being developed.
+
+There are parts I want to rebuild.
+
+There are features I want to simplify.
+
+There will probably also be architectural decisions that I change later.
+
+But that is exactly what makes the project useful to me.
+
+Through one project, I have had to work with UI design, APIs, application architecture, authentication, permissions, state management, dates, responsive design, data modeling, PWA features, and the real problems that appear when a codebase starts becoming larger.
+
+The project is not finished.
+
+And I think that is one of the reasons I continue learning so much from it.
